@@ -1,0 +1,28 @@
+{
+	"manifest_version": 2,
+   "background": {
+   	"scripts": ["background.js"],
+   	"persistent": false
+   },
+   "options_page": "options.html",
+   "content_scripts": [ {
+      "js": [
+      	"jquery.min.js",
+      	"underscore.min.js",
+      	"dictionary-autocomplete.js"
+      ],
+      "css": [
+      	"dictionary-autocomplete.css"
+      ],
+      "matches": [
+      	"<all_urls>"
+      ],
+      "run_at": "document_end"
+   } ],
+   "web_accessible_resources": [
+   	"enable1.txt"
+   ],
+   "name": "Dictionary Autocomplete",
+   "options_page": "options.html",
+   "version": "0.1"
+}

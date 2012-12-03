@@ -1,0 +1,36 @@
+.dictionary-autocomplete-menu {
+	position: fixed;
+	background: white;
+	color: #555;
+	border: 2px solid #555;
+	min-width: 300px;
+	z-index: 99999;
+	-webkit-transform: translateZ(0.01);
+	-moz-transform: translateZ(0.01);
+	-ms-transform: translateZ(0.01);
+	-o-transform: translateZ(0.01);
+	transform: translateZ(0.01);
+	max-height: 150px;
+	overflow-y: auto;
+}
+
+.dictionary-autocomplete-menu ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	position: relative;
+}
+
+.dictionary-autocomplete-menu li {
+	padding: 2px;
+	cursor: default;
+}
+
+.dictionary-autocomplete-item-selected {
+	background: #94b7dd;
+}
+
+.dictionary-autocomplete-chars-highlighted {
+	font-weight: bold;
+	color: #333;
+}
