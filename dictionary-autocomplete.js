@@ -66,7 +66,7 @@
 	}
 
 	function keydownHandler(ev) {
-		console.log(ev.keyCode);
+		//console.log(ev.keyCode);
 		lastKeyWasDelete = false;
 		switch (ev.keyCode) {
 			case 8: //backspace
@@ -99,15 +99,19 @@
 	}
 
 	function inputHandler(ev) {
+		var el = ev.target,
+			$el = $(el),
+			text, position, words;
+		if ($el.attr('type') == 'password') {
+			return;
+		}
+
 		if (lastKeyWasDelete && !currentWord) {
 			hideMenu();
 			return;
 		}
-		var el = ev.target,
-			$el = $(el),
-			text = $el.val(),
-			position = getTextSelectionEnd(el),
-			words;
+		text = $el.val();
+		position = getTextSelectionEnd(el);
 		text = text.substring(0, position+1);
 		position = regexLastIndexOf(text, /\W/) + 1;
 		text = text.substring(position);
