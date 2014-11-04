@@ -134,8 +134,14 @@
 		}
 		menuShowing = true;
 
+		var letters = currentWord.split('')
 		words = _.map(words, function (w) {
-			return w.replace(new RegExp('^'+currentWord, 'i'), '<span class="'+highlightedClass+'">'+currentWord+'</span>');
+			return letters.map(function (l) {
+				var i = w.indexOf(l);
+				var cw = w.substr(0, i);
+				w = w.substr(i + 1);
+				return cw + '<span class="'+highlightedClass+'">'+l+'</span>';
+			}).join('') + w;
 		}).join('</li><li>');
 		$menu.show().empty().append('<ul><li class="'+selectedClass+'">'+words+'</li></ul>');
 		$menu.find('li').on('click', function () {
@@ -209,11 +215,27 @@
 	}
 
 	function updateSessionWords(text) {
-		session = _.uniq(text.replace(/[^\w\s]/g, '').toLowerCase().split(/\s+/g));
+		session = _.uniq(text.replace(/[^\w\s]/g, '').toLowerCase().split(/\s+/g)).sort();
+	}
+
+	function createSearchPattern(text) {
+		function wrap(s, n) {
+			s = n + (s || '');
+			if (s.length > 0) {
+				s = '(?=.*' + s + ')';
+			}
+			return s;
+		}
+		text = text.replace(/\W/, '');
+    // the first char must be at the beginning, but others can be spread
+    // throughout the word in order (fuzzy search)
+		text = text.charAt(0) + text.substr(1).split('').reverse().reduce(wrap, '');
+		return new RegExp('^'+text, 'i');
 	}
 
 	function findWords(text) {
-		var found = [], pattern = new RegExp('^'+text, 'i');
+		var found = [],
+			pattern = createSearchPattern(text);
 		function _find(arr) {
 			var i, l;
 			for (i = 0, l = arr.length; i < l && found.length <= 20; ++i) {
@@ -239,16 +261,16 @@
 			sleft.setEndPoint("EndToStart", sel);
 			return sleft.text.length + sel.text.length;
 		}
-		return el.selectionEnd;	//ff and chrome
+		return el.selectionEnd; //ff and chrome
 	}
 
-	// @author Rob W		http://stackoverflow.com/users/938089/rob-w
-	// @name				getTextBoundingRect
-	// @param input			Required HTMLElement with `value` attribute
+	// @author Rob W    http://stackoverflow.com/users/938089/rob-w
+	// @name        getTextBoundingRect
+	// @param input     Required HTMLElement with `value` attribute
 	// @param selectionStart Optional number: Start offset. Default 0
-	// @param selectionEnd	Optional number: End offset. Default selectionStart
-	// @param debug			Optional boolean. If true, the created test layer
-	//						will not be removed.
+	// @param selectionEnd  Optional number: End offset. Default selectionStart
+	// @param debug     Optional boolean. If true, the created test layer
+	//            will not be removed.
 	function getTextBoundingRect(input, selectionStart, selectionEnd, debug) {
 		// Basic parameter validation
 		if(!input || !('value' in input)) return input;
@@ -342,12 +364,12 @@
 			var isBoxModel = box.offsetWidth == 2;
 			body.removeChild(box);
 			box = input.getBoundingClientRect();
-			var clientTop	= docElem.clientTop	|| body.clientTop	|| 0,
+			var clientTop = docElem.clientTop || body.clientTop || 0,
 				clientLeft = docElem.clientLeft || body.clientLeft || 0,
-				scrollTop	= win.pageYOffset || isBoxModel && docElem.scrollTop	|| body.scrollTop,
+				scrollTop = win.pageYOffset || isBoxModel && docElem.scrollTop  || body.scrollTop,
 				scrollLeft = win.pageXOffset || isBoxModel && docElem.scrollLeft || body.scrollLeft;
 			return {
-				top : box.top	+ scrollTop	- clientTop,
+				top : box.top + scrollTop - clientTop,
 				left: box.left + scrollLeft - clientLeft};
 		}
 		function getInputCSS(prop, isnumber){
